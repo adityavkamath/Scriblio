@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "npx tsc -b",
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate": "prisma migrate dev",
     "generate": "prisma generate"
@@ -19,6 +20,6 @@
     "@prisma/client": "^6.9.0"
   },
   "exports": {
-    "./client": "./src/index.ts"
+    "./client": "./dist/index.js"
   }
 }
