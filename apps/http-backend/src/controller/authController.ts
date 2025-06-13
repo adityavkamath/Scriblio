@@ -9,7 +9,7 @@ import {
 import db from "@repo/db/client";
 import bcrypt from "bcrypt";
 import { config } from "dotenv";
-config()
+config();
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
@@ -27,7 +27,7 @@ export const SignupController: RequestHandler = async (
   }
   const { email, password, name, photo } = parsedBody.data!;
   try {
-    const existingUser = await db.user.findFirst({
+    const existingUser = await db.default.user.findFirst({
       where: { email },
     });
     if (existingUser) {
@@ -36,7 +36,7 @@ export const SignupController: RequestHandler = async (
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const user = await db.user.create({
+    const user = await db.default.user.create({
       data: {
         email,
         password: hashedPassword,
@@ -71,7 +71,7 @@ export const SigninController: RequestHandler = async (
   }
   const { email, password } = parsedBody.data;
   try {
-    const user = await db.user.findFirst({
+    const user = await db.default.user.findFirst({
       where: { email },
     });
     if (!user) {
@@ -79,7 +79,7 @@ export const SigninController: RequestHandler = async (
       return;
     }
     const hashedPassword = user.password;
-    const original = bcrypt.compare(hashedPassword, password);
+    const original = await bcrypt.compare(hashedPassword, password);
     if (!original) {
       res.status(301).json({
         message: "Invalid Password",
