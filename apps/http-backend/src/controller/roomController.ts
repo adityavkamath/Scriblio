@@ -1,5 +1,5 @@
 import express, { RequestHandler, Request, Response } from "express";
-import { AuthMiddleware } from "../middleware/authMiddleware.js";
+import { AuthMiddleware } from "../middleware/authMiddleware";
 const app = express();
 
 app.use(AuthMiddleware);

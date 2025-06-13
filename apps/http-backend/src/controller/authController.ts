@@ -27,7 +27,7 @@ export const SignupController: RequestHandler = async (
   }
   const { email, password, name, photo } = parsedBody.data!;
   try {
-    const existingUser = await db.default.user.findFirst({
+    const existingUser = await db.user.findFirst({
       where: { email },
     });
     if (existingUser) {
@@ -36,7 +36,7 @@ export const SignupController: RequestHandler = async (
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const user = await db.default.user.create({
+    const user = await db.user.create({
       data: {
         email,
         password: hashedPassword,
@@ -71,7 +71,7 @@ export const SigninController: RequestHandler = async (
   }
   const { email, password } = parsedBody.data;
   try {
-    const user = await db.default.user.findFirst({
+    const user = await db.user.findFirst({
       where: { email },
     });
     if (!user) {

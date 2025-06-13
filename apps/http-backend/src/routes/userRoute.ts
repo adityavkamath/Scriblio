@@ -2,7 +2,7 @@ import express, { Router } from "express";
 import {
   SigninController,
   SignupController,
-} from "../controller/authController.js";
+} from "../controller/authController";
 const userRouter: Router = Router();
 
 userRouter.post("/signup", SignupController);

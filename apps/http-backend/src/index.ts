@@ -4,8 +4,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 import morgan from "morgan";
-import userRouter from "./routes/userRoute.js";
-import roomRouter from "./routes/roomRoute.js";
+import userRouter from "./routes/userRoute";
+import roomRouter from "./routes/roomRoute";
 import cookieParser from "cookie-parser";
 
 const PORT = process.env.PORT || 3002;
