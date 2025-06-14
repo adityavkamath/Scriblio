@@ -79,7 +79,7 @@ export const SigninController: RequestHandler = async (
       return;
     }
     const hashedPassword = user.password;
-    const original = await bcrypt.compare(hashedPassword, password);
+    const original = await bcrypt.compare( password,hashedPassword);
     if (!original) {
       res.status(301).json({
         message: "Invalid Password",
