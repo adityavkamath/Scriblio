@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 export default function LeaveRoomPage() {
-  const { id } = useParams();
+  const { roomId } = useParams();
   const router = useRouter();
 
   const leaveRoom = async () => {
@@ -12,7 +12,7 @@ export default function LeaveRoomPage() {
       const res = await fetch(`/api/room/leave`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ roomId: id }),
+        body: JSON.stringify({ roomId: roomId }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -28,7 +28,7 @@ export default function LeaveRoomPage() {
 
   return (
     <div className="max-w-md mx-auto mt-10 text-center space-y-4">
-      <h2 className="text-lg font-bold">Leave Room: {id}</h2>
+      <h2 className="text-lg font-bold">Leave Room: {roomId}</h2>
       <Button onClick={leaveRoom} variant="destructive">
         Confirm Leave
       </Button>

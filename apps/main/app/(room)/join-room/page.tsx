@@ -24,14 +24,14 @@ export default function JoinRoomPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 space-y-4">
-      <h1 className="text-xl font-bold">Join Room</h1>
+    <div className="flex flex-col items-center space-y-4 ">
       <Input
+        className="p-2 font-bold hover:border-2 border-black"
         placeholder="Room ID"
         value={roomId}
         onChange={(e) => setRoomId(e.target.value)}
       />
-      <Button onClick={handleJoin}>Join Room</Button>
+      <Button className='cursor-pointer' onClick={handleJoin}>Join Room</Button>
     </div>
   );
 }

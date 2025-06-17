@@ -17,7 +17,7 @@ const SignInPage = async () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="border-2 p-4 shadow-2xl w-full max-w-sm mx-auto space-y-6">
-        <h1 className="text-2xl font-bold text-center mb-6">Sign In</h1>
+        <h1 className="text-2xl font-bold text-center mb-6">Sign In to Scriblio</h1>
 
         <GoogleSignIn />
         <div className="relative">
