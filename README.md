@@ -1,4 +1,3 @@
-````md
 # 🧩 Turborepo Monorepo Starter
 
 A modern monorepo built using [Turborepo](https://turbo.build/repo) and [pnpm](https://pnpm.io/). This setup is perfect for managing multiple apps (like `web`, `admin`, `docs`) and shared packages (like `ui`, `config`, `utils`) in a single, fast, and scalable codebase.
@@ -11,9 +10,6 @@ To get started quickly with a fresh turborepo setup:
 
 ```bash
 npx create-turbo@latest
-````
-
----
 
 ## 📁 Project Structure
 
