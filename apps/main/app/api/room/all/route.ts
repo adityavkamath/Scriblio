@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import db from "@repo/db/client";
-import { NextResponse , NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   const session = await auth();
@@ -9,36 +9,43 @@ export async function GET() {
   if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
   try {
-    const user = await db.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        rooms: {
+    // Get all RoomUser entries for this user, include room and users in the room
+    const roomUsers = await db.roomUser.findMany({
+      where: { userId },
+      include: {
+        room: {
           include: {
-            users: {
-              select: {
-                id: true,
-                name: true,
+            RoomUser: {
+              include: {
+                user: true,
               },
             },
           },
-          orderBy: {
-            createdAt: "desc",
-          },
         },
       },
+      // Remove orderBy: { createdAt: "desc" }, because RoomUser has no createdAt
     });
 
     const data = {
-      userId: user!.id,
-      userName: user!.name,
-      rooms: user!.rooms.map((room: any) => ({
-        roomId: room.id,
-        slug: room.slug,
-        createdAt: room.createdAt.toISOString().slice(0, 10).split("-").reverse().join("-"),
-        participants: room.users.map((u: any) => u.id === userId ? "You" : u.name),
-        noOfParticipants: room.users.length,
+      userId: session.user.id,
+      userName: session.user.name,
+      rooms: roomUsers.map((ru) => ({
+        roomId: ru.room.id,
+        slug: ru.room.slug,
+        // Remove or replace createdAt if you want, or use ru.room.createdAt
+        createdAt: ru.room.createdAt
+          ? ru.room.createdAt
+              .toISOString()
+              .slice(0, 10)
+              .split("-")
+              .reverse()
+              .join("-")
+          : null,
+        participants: ru.room.RoomUser.map((rUser) =>
+          rUser.userId === userId ? "You" : rUser.user.name
+        ),
+        noOfParticipants: ru.room.RoomUser.length,
+        permission: ru.permission,
       })),
     };
 

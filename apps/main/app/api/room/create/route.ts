@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
 
   const session = await auth();
   console.log("SESSION:", session);
-  
+
   if (!session.user.id) {
     return new NextResponse("Unauthenticated", { status: 401 });
   }
@@ -29,8 +29,8 @@ export async function POST(req: NextRequest) {
         id: roomId,
         slug: name,
         adminId: userId,
-        users: {
-          connect: [{ id: userId }],
+        RoomUser: {
+          create: [{ userId, permission: "WRITE" }],
         },
       },
     });

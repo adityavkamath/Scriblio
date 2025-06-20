@@ -5,7 +5,7 @@ export async function POST(
   req: NextRequest,
   { params }: { params: { roomId: string } }
 ) {
-  const { guestId, approve } = await req.json();
+  const { guestId, approve, permission } = await req.json();
   const guest = await db.pendingGuest.findUnique({ where: { id: guestId } });
   if (!guest)
     return NextResponse.json({ error: "Guest not found" }, { status: 404 });
@@ -13,16 +13,19 @@ export async function POST(
   if (approve) {
     const user = await db.user.findUnique({ where: { email: guest.email! } });
     if (user) {
-      await db.room.update({
-        where: { id: params.roomId },
+      // Add to RoomUser with selected permission (default to VIEW)
+      await db.roomUser.create({
         data: {
-          users: { connect: { id: user.id } },
-          pending: { delete: { id: guestId } },
+          roomId: params.roomId,
+          userId: user.id,
+          permission: permission || "VIEW",
         },
       });
+      // Remove from pending
+      await db.pendingGuest.delete({ where: { id: guestId } });
     } else {
       return NextResponse.json(
-        { error: "User not found. Please ask them to sign up first." , success: true },
+        { error: "User not found. Please ask them to sign up first.", success: true },
         { status: 400 },
       );
     }

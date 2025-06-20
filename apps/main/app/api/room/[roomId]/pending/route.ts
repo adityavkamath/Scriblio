@@ -14,8 +14,15 @@ export async function POST(req: NextRequest, { params }: { params: { roomId: str
   const room = await prisma.room.findUnique({ where: { id: roomId } });
   if (!room) return NextResponse.json({ message: "Room not found" }, { status: 404 });
 
-  if (room.adminId === user.id) return NextResponse.json({ ok: true }); 
+  if (room.adminId === user.id) return NextResponse.json({ ok: true });
 
+  // Check if already a member
+  const isMember = await prisma.roomUser.findUnique({
+    where: { roomId_userId: { roomId, userId: user.id } },
+  });
+  if (isMember) return NextResponse.json({ ok: true });
+
+  // Check if already pending
   const exists = await prisma.pendingGuest.findFirst({ where: { roomId, email: user.email } });
   if (!exists) {
     await prisma.pendingGuest.create({
