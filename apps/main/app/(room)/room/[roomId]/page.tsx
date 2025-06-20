@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import PendingGuests from "./pending/page";
+import { toast } from "sonner";
+import Sidebar from "./Sidebar";
 
 export default function RoomPage() {
   const { roomId } = useParams();
@@ -15,7 +15,12 @@ export default function RoomPage() {
     isAdmin: boolean;
     isMember: boolean;
     isPending: boolean;
+    permission?: string | null;
   } | null>(null);
+
+  const [pendingUsers, setPendingUsers] = useState([]);
+  const [users, setUsers] = useState([]);
+  const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     if (status === "loading" || !session) return;
@@ -34,6 +39,7 @@ export default function RoomPage() {
           isAdmin: data.isAdmin,
           isMember: data.isMember,
           isPending: data.isPending,
+          permission: data.permission,
         });
 
         if (!data.isMember && !data.isAdmin && !data.isPending) {
@@ -47,6 +53,49 @@ export default function RoomPage() {
     checkStatus();
   }, [roomId, session, status, router]);
 
+  useEffect(() => {
+    if (!roomId || status !== "authenticated") return;
+    const getTokenAndConnect = async () => {
+      try {
+        const res = await fetch("/api/getToken");
+        const data = await res.json();
+        console.log("Token data:", data);
+        if (!data.token) {
+          toast.error("Failed to get auth token");
+          return;
+        }
+
+        const ws = new WebSocket(`ws://localhost:8080/?token=${data.token}`);
+        wsRef.current = ws;
+
+        ws.onopen = () => {
+          ws.send(JSON.stringify({ type: "join_room", roomId }));
+        };
+
+        ws.onmessage = (event) => {
+          const msg = JSON.parse(event.data);
+          if (msg.type === "approval") {
+            toast.success(
+              msg.status === "approved"
+                ? "You are approved!"
+                : "You are rejected!"
+            );
+          }
+          if (msg.type === "pending_update") setPendingUsers(msg.pendingUsers);
+          if (msg.type === "users_update") setUsers(msg.users);
+        };
+
+        return () => {
+          ws.send(JSON.stringify({ type: "leave_room", roomId }));
+          ws.close();
+        };
+      } catch (err) {
+        toast.error("WebSocket connection failed");
+      }
+    };
+    getTokenAndConnect();
+  }, [roomId, status]);
+
   if (status === "loading") return <Skeleton className="h-[100px] w-full" />;
 
   if (roomStatus?.isPending && !roomStatus.isAdmin) {
@@ -58,18 +107,20 @@ export default function RoomPage() {
       </Alert>
     );
   }
-  
 
-  return roomStatus && roomStatus.isPending ? (
-    <AlertDescription>
-      Waiting for admin approval to join this room
-    </AlertDescription>
-  ) : (
-    <>
-      {roomStatus && roomStatus.isAdmin ? (
-        <PendingGuests />
-      ) : null }
-      <h1>Here IS The Canvas</h1>
-    </>
+  return (
+    <div className="relative h-screen flex">
+      {roomStatus?.isAdmin && (
+        <Sidebar
+          ws={wsRef.current}
+          roomId={roomId as string}
+          pendingUsers={pendingUsers}
+          users={users}
+        />
+      )}
+      <main className="flex-1 flex items-center justify-center">
+        <h1>Here IS The Canvas</h1>
+      </main>
+    </div>
   );
 }
