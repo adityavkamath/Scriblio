@@ -13,28 +13,17 @@ export async function POST(req: NextRequest) {
   if (!roomId) return new NextResponse("Missing room ID", { status: 400 });
 
   try {
-    const room = await db.room.findUnique({
-      where: { id: roomId },
-      include: { users: true },
-    });
+    // Remove from RoomUser
+    await db.roomUser.deleteMany({ where: { roomId, userId } });
 
-    if (!room) return new NextResponse("Room not found", { status: 404 });
-
-    const updatedUsers = room.users.filter((user) => user.id !== userId);
-    if (updatedUsers.length === 0) {
+    // If no users left, delete room and chats
+    const remaining = await db.roomUser.count({ where: { roomId } });
+    if (remaining === 0) {
       await db.chat.deleteMany({ where: { roomId } });
       await db.room.delete({ where: { id: roomId } });
       return new NextResponse("Room deleted");
     }
 
-    await db.room.update({
-      where: { id: roomId },
-      data: {
-        users: {
-          set: updatedUsers.map((u) => ({ id: u.id })),
-        },
-      },
-    });
     return new NextResponse("Left room");
   } catch (e) {
     return new NextResponse("Server error", { status: 500 });

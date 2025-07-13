@@ -17,6 +17,7 @@ const executeAction = async <T>({
     return {
       success: true,
       message: successMessage,
+      error: "",
     };
   } catch (error) {
     if (isRedirectError(error)) {
@@ -26,6 +27,7 @@ const executeAction = async <T>({
     return {
       success: false,
       message: "An error has occurred during executing the action",
+      error: error instanceof Error ? error.message : String(error),
     };
   }
 };
