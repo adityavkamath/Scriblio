@@ -8,7 +8,9 @@ type Options<T> = {
 const executeAction = async <T>({
   actionFn,
   successMessage = "The actions was successful",
-}: Options<T>): Promise<{ success: boolean; message: string }> => {
+}: Options<T>): Promise<{
+  error: string; success: boolean; message: string 
+}> => {
   try {
     await actionFn();
 

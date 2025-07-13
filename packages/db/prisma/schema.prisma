@@ -7,6 +7,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Permission {
+  VIEW
+  WRITE
+}
+
+model PendingGuest {
+  id         String     @id @default(uuid())
+  roomId     String
+  room       Room       @relation(fields: [roomId], references: [id])
+  name       String
+  email      String?
+  approved   Boolean    @default(false)
+  permission Permission @default(VIEW)
+  createdAt  DateTime   @default(now())
+}
+
+model Room {
+  id        String         @id
+  slug      String
+  createdAt DateTime       @default(now())
+  adminId   String
+  admin     User           @relation(fields: [adminId], references: [id], name: "RoomAdmin")
+  chats     Chat[]
+  pending   PendingGuest[]
+
+  RoomUser RoomUser[]
+}
+
+model RoomUser {
+  id         String     @id @default(uuid())
+  roomId     String
+  userId     String
+  permission Permission @default(VIEW)
+  room       Room       @relation(fields: [roomId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+
+  @@unique([roomId, userId])
+}
+
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
@@ -16,9 +55,10 @@ model User {
   emailVerified DateTime? @map("email_verified")
   accounts      Account[]
   sessions      Session[]
-  rooms         Room[]    @relation("RoomUsers")
   chats         Chat[]
   adminOf       Room[]    @relation("RoomAdmin")
+
+  RoomUser RoomUser[]
 }
 
 model Account {
@@ -54,16 +94,6 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-}
-
-model Room {
-  id        String   @id
-  slug      String
-  createdAt DateTime @default(now())
-  adminId   String
-  admin     User     @relation(fields: [adminId], references: [id], name: "RoomAdmin")
-  chats     Chat[]
-  users     User[]   @relation("RoomUsers")
 }
 
 model Chat {
