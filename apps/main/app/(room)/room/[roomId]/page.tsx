@@ -29,7 +29,7 @@ export default function RoomPage() {
       try {
         const res = await fetch(`/api/room/${roomId}/status`);
         const data = await res.json();
-        console.log("Room status data:", data);
+
 
         if (data.error) {
           router.push("/");
@@ -42,7 +42,6 @@ export default function RoomPage() {
           isPending: data.isPending,
           permission: data.permission,
         });
-        
         if (!data.isMember && !data.isAdmin && !data.isPending) {
           await fetch(`/api/room/${roomId}/pending`, { method: "POST" });
         }
@@ -58,18 +57,14 @@ export default function RoomPage() {
     if (!roomId || status !== "authenticated") return;
     const getTokenAndConnect = async () => {
       try {
-        const res = await fetch("/api/getToken", { credentials: "include" });
+
         const data = await res.json();
         console.log("Token data:", data);
         if (!data.token) {
           toast.error("Failed to get auth token");
           return;
         }
-        console.log("Connecting to WebSocket with token:", data.token);
-        const ws = new WebSocket(`ws://localhost:8080/?token=${data.token}`);
-        ws.onopen = () => {
-          console.log("WebSocket connection established");
-        };
+
         wsRef.current = ws;
 
         ws.onopen = () => {
