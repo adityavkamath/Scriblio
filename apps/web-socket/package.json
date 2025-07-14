@@ -1,0 +1,27 @@
+{
+  "name": "web-socket",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "type": "module",
+  "license": "ISC",
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "pnpm run build && node ./dist/index.js"
+  },
+  "dependencies": {
+    "@panva/hkdf": "^1.2.1",
+    "@repo/typescript-config": "workspace:*",
+    "axios": "^1.10.0",
+    "dotenv": "^16.5.0",
+    "jose": "6.0.11",
+    "jsonwebtoken": "^9.0.2",
+    "ws": "^8.18.2"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/ws": "^8.18.1"
+  }
+}

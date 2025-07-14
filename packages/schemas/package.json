@@ -1,0 +1,20 @@
+{
+  "name": "@repo/schemas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "exports":{
+    "./userschema":"./src/userSchema.ts"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build":"tsc -b"
+  },
+  "dependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "zod": "^3.25.64"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@repo/database",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "exports":{
+    "./dbclient":"./src/index.ts"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "prisma": "^6.9.0"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.9.1",
+    "@prisma/client": "^6.9.0"
+  }
+}
