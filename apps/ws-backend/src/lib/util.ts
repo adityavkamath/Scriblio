@@ -27,9 +27,6 @@ async function getDerivedEncryptionKey(
   salt: string
 ) {
   let length = enc === "A256CBC-HS512" ? 64 : 32;
-  return await hkdf(
-    "sha256",
-    Buffer.from(keyMaterial),
     salt,
     `Auth.js Generated Encryption Key (${salt})`,
     length
