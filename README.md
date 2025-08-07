@@ -1,4 +1,4 @@
-# ExcaliDraw - Nextjs Application
+# Scriblio - Nextjs Application
 
 ## features
 
