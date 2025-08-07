@@ -1,4 +1,4 @@
-# Scriblio - Nextjs Application
+# Scriblio 
 
 ## Features
 
