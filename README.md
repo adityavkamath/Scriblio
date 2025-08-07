@@ -1,15 +1,10 @@
 # Scriblio - Nextjs Application
 
-## features
+## Features
 
 - This application supports oauthentication provided by google as well as traditional credential login.
 - The web socket establishes connections only with authenticated user for realtime communication.
 
-## challenges Faced
-
-- Faced issues decrypting the token in web socket server which was recieved from auth.js library
-  - Solution: Built a custom decoder function helped solve the issue.
-  
 # 🧩 Turborepo Monorepo Starter
 
 A modern monorepo built using [Turborepo](https://turbo.build/repo) and [pnpm](https://pnpm.io/). This setup is perfect for managing multiple apps (like `web`, `admin`, `docs`) and shared packages (like `ui`, `config`, `utils`) in a single, fast, and scalable codebase.
@@ -115,34 +110,5 @@ pnpm test
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Here’s how you can help:
-
-1. 🍴 Fork this repo
-2. 🔧 Create a new branch (`git checkout -b feature/your-feature`)
-3. ✅ Commit your changes (`git commit -m 'feat: add cool feature'`)
-4. 🚀 Push to your branch (`git push origin feature/your-feature`)
-5. 🧵 Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-## 🙋‍♂️ Support
-
-If you encounter any issues or have questions, feel free to [open an issue](https://github.com/excalidraw/issues) or start a discussion.
-
----
-
-## 🌐 Learn More
-
-* [Turborepo Docs](https://turbo.build/repo/docs)
-* [pnpm Docs](https://pnpm.io/)
-* [Next.js Docs](https://nextjs.org/docs)
 
 
